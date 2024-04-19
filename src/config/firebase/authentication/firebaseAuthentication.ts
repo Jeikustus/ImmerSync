@@ -7,20 +7,8 @@ type AuthProviderTypes  = {
     authProvider: string,
 }
 
-export type userDataTypes = {
-    userID: string;
-    userEmail: string;
-    userFullName: string;
-    userAccountType: string;
-    userAccountStatus: string;
-    userProfileURL: File;
-    profilePicture: string;
-    // by user
-    userOrganizationName?: string;
-    userGradeLevel?: string;
-}
 
-export const createUserWithEmailAndPassword = async (userEmail: string, password: string, userFullName: string, userAccountType: string, selectedProfile: File) => {
+export const createUserWithEmailAndPassword = async (userEmail: string, password: string, userFullName: string, userAccountType: string, selectedProfile: File, userGradeLevel?: string, userOrganizationName?: string, ) => {
     try {
         const userCredential = await createUserWithEmailAndPasswordFirebase(conAuth, userEmail, password);
         const { uid } = userCredential.user;
@@ -31,7 +19,17 @@ export const createUserWithEmailAndPassword = async (userEmail: string, password
 
         const pictureURL = await getDownloadURL(pictureRef);
 
-        const userData = {
+        const userData: {
+            userID: string;
+            userEmail: string;
+            userFullName: string;
+            userAccountType: string;
+            userAccountStatus: string;
+            pictureURL: string;
+            authProvider: string;
+            userGradeLevel?: string; 
+            userOrganizationName?: string; 
+        } = {
             userID: uid,
             userEmail,
             userFullName,
@@ -41,7 +39,15 @@ export const createUserWithEmailAndPassword = async (userEmail: string, password
             authProvider: "local",
         };
 
-        const userDocPath = `users/${userAccountType}/${uid}`;
+        if (userGradeLevel) {
+            userData.userGradeLevel = userGradeLevel;
+        }
+
+        if (userOrganizationName) {
+            userData.userOrganizationName = userOrganizationName;
+        }
+
+        const userDocPath = `users/${uid}`;
         await setDoc(doc(conDatabase, userDocPath), userData);
 
     } catch (error) {

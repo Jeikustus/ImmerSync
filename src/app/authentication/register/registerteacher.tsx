@@ -102,10 +102,7 @@ export const RegisterTeacher = () => {
             required
           />
           <div className="flex space-x-2 text-white pb-5">
-            <p>Already have an account?</p>
-            <Link href="/login" className="font-medium hover:text-blue-500">
-              <em>Login</em>
-            </Link>
+            <em className="font-medium hover:text-blue-500">Click Login!</em>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit">Submit</Button>
