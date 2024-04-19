@@ -4,15 +4,67 @@ import React, { useState } from "react";
 import { InputWithLabel } from "@/components/ui/inputwithlabel";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-};
+import { signInWithEmailAndPassword } from "@/config/firebase";
+import { doc, getDoc } from "@firebase/firestore";
+import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [user] = useAuthState(conAuth);
+
+  const handleLogin = async (
+    e: React.FormEvent,
+    userEmail: string,
+    password: string,
+    setError: React.Dispatch<React.SetStateAction<string | null>>
+  ) => {
+    e.preventDefault();
+
+    try {
+      await signInWithEmailAndPassword(userEmail, password);
+
+      console.log("User signed in successfully");
+
+      const userDocRef = doc(conDatabase, `users/${user ? user.uid : null}`);
+      const userDocSnapshot = await getDoc(userDocRef);
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data() as {
+          userAccountStatus: string;
+          userAccountType: string;
+        };
+
+        const accountStatus = userData.userAccountStatus;
+        if (accountStatus === "Pending") {
+          window.location.href = "/pending";
+        } else if (accountStatus === "Declined") {
+          window.location.href = "/declined";
+        } else if (accountStatus === "Approved") {
+          const accountType = userData.userAccountType;
+          if (
+            accountType === "Teacher" ||
+            accountType === "Student" ||
+            accountType === "Organization"
+          ) {
+            window.location.href = "/dashboard";
+          } else if (accountType === "Admin") {
+            window.location.href = "/admin";
+          } else {
+            console.error("Unknown account type:", accountType);
+          }
+        } else {
+          console.error("Unknown account status:", accountStatus);
+        }
+      } else {
+        console.error("User document does not exist");
+      }
+    } catch (error) {
+      setError((error as Error).message);
+      console.error("Error signing in:", error);
+    }
+  };
 
   return (
     <div className="relative">
@@ -21,7 +73,10 @@ const LoginPage = () => {
           <h1 className="text-3xl font-bold">Login</h1>
           <p>Enter your Email and Password to access Account..</p>
         </div>
-        <form onSubmit={handleLogin} className="grid gap-3">
+        <form
+          onSubmit={(e) => handleLogin(e, email, password, setError)}
+          className="grid gap-3"
+        >
           <InputWithLabel
             label="Email"
             type="email"
@@ -47,12 +102,15 @@ const LoginPage = () => {
             </Link>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button>Submit</Button>
+          <Button type="submit">Submit</Button>
           <p className="text-white">
             Don&apos;t have an Account yet?{" "}
-            <em className="font-medium hover:text-blue-500 cursor-pointer">
-              Click Register
-            </em>{" "}
+            <Link
+              href={"/register"}
+              className="font-medium hover:text-blue-500"
+            >
+              <em>Click Register</em>
+            </Link>
           </p>
         </form>
       </div>

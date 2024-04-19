@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordFirebase, Auth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider,  } from "firebase/auth";
+import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordFirebase, Auth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase, } from "firebase/auth";
 import {  conAuth, conDatabase } from "../firebaseConfig"; 
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "@firebase/storage";
@@ -55,17 +55,15 @@ export const createUserWithEmailAndPassword = async (userEmail: string, password
     }
 };
 
-
-
-export const signInWithEmailAndPassword = async (auth: Auth, userEmail: string, password: string) => {
+export const signInWithEmailAndPassword = async (email: string, password: string) => {
     try {
-        await signInWithEmailAndPassword(auth, userEmail, password);
-        console.log("User signed in successfully");
+      const userCredential = await signInWithEmailAndPasswordFirebase(conAuth, email, password);
+      return userCredential.user;
     } catch (error) {
-        console.error("Error signing in:", error);
-        throw error;
+      throw error;
     }
-}
+  };
+  
 
 export const resetPassword = async (auth: Auth, userEmail: string) => {
     try {
@@ -103,3 +101,11 @@ export const signInWithFacebook = async (auth: Auth) => {
         throw error;
     }
 }
+
+export const logoutUser = async (): Promise<void> => {
+    try {
+      await conAuth.signOut();
+    } catch (error) {
+      throw error;
+    }
+  };
