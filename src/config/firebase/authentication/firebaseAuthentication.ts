@@ -1,11 +1,23 @@
 import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordFirebase, Auth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider,  } from "firebase/auth";
 import {  conAuth, conDatabase } from "../firebaseConfig"; 
 import { doc, setDoc } from "firebase/firestore";
-import { userDataTypes } from "@/config/types";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "@firebase/storage";
 
 type AuthProviderTypes  = {
     authProvider: string,
+}
+
+export type userDataTypes = {
+    userID: string;
+    userEmail: string;
+    userFullName: string;
+    userAccountType: string;
+    userAccountStatus: string;
+    userProfileURL: File;
+    profilePicture: string;
+    // by user
+    userOrganizationName?: string;
+    userGradeLevel?: string;
 }
 
 export const createUserWithEmailAndPassword = async (userEmail: string, password: string, userFullName: string, userAccountType: string, selectedProfile: File) => {
@@ -13,29 +25,24 @@ export const createUserWithEmailAndPassword = async (userEmail: string, password
         const userCredential = await createUserWithEmailAndPasswordFirebase(conAuth, userEmail, password);
         const { uid } = userCredential.user;
 
+        const storage = getStorage();
+        const pictureRef = ref(storage, `usersProfilePictures/${uid}/${userFullName}`);
+        await uploadBytes(pictureRef, selectedProfile);
+
+        const pictureURL = await getDownloadURL(pictureRef);
+
         const userData = {
             userID: uid,
             userEmail,
             userFullName,
             userAccountType,
             userAccountStatus: "Pending",
-            selectedProfile,
+            pictureURL,
             authProvider: "local",
         };
 
-        // Save user data to Firestore
-        const userDocPath = `users/${uid}`;
+        const userDocPath = `users/${userAccountType}/${uid}`;
         await setDoc(doc(conDatabase, userDocPath), userData);
-
-        // Upload profile picture to Firebase Storage
-        const storage = getStorage();
-        const pictureRef = ref(storage, `usersProfilePictures/${uid}/${userData.userFullName}`);
-        await uploadBytes(pictureRef, selectedProfile);
-
-        // Save profile picture URL to Firestore
-        const pictureURL = await getDownloadURL(pictureRef);
-        const profilePictureDocPath = `usersProfilePictures/${uid}`;
-        await setDoc(doc(conDatabase, profilePictureDocPath), { pictureURL });
 
     } catch (error) {
         throw error;
