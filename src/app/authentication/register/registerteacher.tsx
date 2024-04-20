@@ -2,10 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/ui/inputwithlabel";
-
-import Link from "next/link";
 import React, { useState } from "react";
-import { userDataTypes } from "@/config/types";
 import { createUserWithEmailAndPassword } from "@/config/firebase/authentication";
 
 export const RegisterTeacher = () => {
