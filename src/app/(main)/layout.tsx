@@ -1,3 +1,5 @@
+import { NavigationBar } from "./navigation";
+
 type Props = {
   children: React.ReactNode;
 };
@@ -5,10 +7,9 @@ type Props = {
 const MainLayout = ({ children }: Props) => {
   return (
     <>
-      <main className="h-screen">
-        <div className="mx-auto h-full flex justify-center items-center">
-          {children}
-        </div>
+      <NavigationBar />
+      <main className="h-screen bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-600">
+        <div className="mx-auto h-full">{children}</div>
       </main>
     </>
   );
