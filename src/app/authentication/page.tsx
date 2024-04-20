@@ -21,7 +21,7 @@ const AuthenticationPage = () => {
           <TabsTrigger className="w-full text-white" value="login">
             Login
           </TabsTrigger>
-          <TabsTrigger className="w-full" value="register">
+          <TabsTrigger className="w-full text-white" value="register">
             Register
           </TabsTrigger>
         </TabsList>

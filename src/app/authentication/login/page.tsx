@@ -26,8 +26,16 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(userEmail, password);
 
-      const userDocRef = doc(conDatabase, `users/${user ? user.uid : null}`);
+      console.log("User signed in successfully");
+
+      const currentUser = conAuth.currentUser;
+
+      const userDocRef = doc(
+        conDatabase,
+        `users/${currentUser ? currentUser.uid : null}`
+      );
       const userDocSnapshot = await getDoc(userDocRef);
+
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data() as {
           userAccountStatus: string;
@@ -56,8 +64,6 @@ const LoginPage = () => {
           console.error("Unknown account status:", accountStatus);
         }
       }
-
-      console.log("User signed in successfully");
     } catch (error) {
       setError((error as Error).message);
       console.error("Error signing in:", error);
