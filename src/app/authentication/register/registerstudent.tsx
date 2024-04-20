@@ -10,6 +10,7 @@ import { createUserWithEmailAndPassword } from "@/config/firebase/authentication
 export const RegisterStudent = () => {
   const [fullname, setFullName] = useState<string>("");
   const [gradeLevel, setGradeLevel] = useState<string>("");
+  const [organizationName, setOrganizationName] = useState<string>();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -35,7 +36,8 @@ export const RegisterStudent = () => {
         fullname,
         accountType,
         selectPicture,
-        gradeLevel
+        gradeLevel,
+        organizationName
       );
 
       setFullName("");

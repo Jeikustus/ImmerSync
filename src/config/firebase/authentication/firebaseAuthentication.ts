@@ -8,7 +8,7 @@ type AuthProviderTypes  = {
 }
 
 
-export const createUserWithEmailAndPassword = async (userEmail: string, password: string, userFullName: string, userAccountType: string, selectedProfile: File, userGradeLevel?: string, userOrganizationName?: string, ) => {
+export const createUserWithEmailAndPassword = async (userEmail: string, password: string, userFullName: string, userAccountType: string, selectedProfile: File, userGradeLevel?: string, userOrganizationName?: string ) => {
     try {
         const userCredential = await createUserWithEmailAndPasswordFirebase(conAuth, userEmail, password);
         const { uid } = userCredential.user;
@@ -41,7 +41,7 @@ export const createUserWithEmailAndPassword = async (userEmail: string, password
 
         if (userGradeLevel) {
             userData.userGradeLevel = userGradeLevel;
-        }
+        }else
 
         if (userOrganizationName) {
             userData.userOrganizationName = userOrganizationName;

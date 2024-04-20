@@ -52,7 +52,7 @@ const LoginPage = () => {
           if (
             accountType === "Teacher" ||
             accountType === "Student" ||
-            accountType === "Organization"
+            accountType === "Organizer"
           ) {
             window.location.href = "/dashboard";
           } else if (accountType === "Admin") {
