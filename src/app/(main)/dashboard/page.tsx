@@ -4,12 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
 import Image from "next/image";
-import {
-  AtSign,
-  BriefcaseBusiness,
-  Building2,
-  GraduationCap,
-} from "lucide-react";
+import { AtSign, Building2, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/config/firebase";
 
