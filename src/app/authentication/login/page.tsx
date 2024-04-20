@@ -26,8 +26,6 @@ const LoginPage = () => {
     try {
       await signInWithEmailAndPassword(userEmail, password);
 
-      console.log("User signed in successfully");
-
       const userDocRef = doc(conDatabase, `users/${user ? user.uid : null}`);
       const userDocSnapshot = await getDoc(userDocRef);
       if (userDocSnapshot.exists()) {
@@ -38,9 +36,9 @@ const LoginPage = () => {
 
         const accountStatus = userData.userAccountStatus;
         if (accountStatus === "Pending") {
-          window.location.href = "/pending";
+          window.location.href = "/authentication/account/pending";
         } else if (accountStatus === "Declined") {
-          window.location.href = "/declined";
+          window.location.href = "/authentication/account/declined-account";
         } else if (accountStatus === "Approved") {
           const accountType = userData.userAccountType;
           if (
@@ -57,9 +55,9 @@ const LoginPage = () => {
         } else {
           console.error("Unknown account status:", accountStatus);
         }
-      } else {
-        console.error("User document does not exist");
       }
+
+      console.log("User signed in successfully");
     } catch (error) {
       setError((error as Error).message);
       console.error("Error signing in:", error);
