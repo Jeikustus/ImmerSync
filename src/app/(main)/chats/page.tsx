@@ -1,15 +1,14 @@
-"use client"
+"use client";
 
+import { useState } from "react";
 import { ChatBox } from "./chatbox";
-import { RecentChats } from "./recentchat";
 
 const ChatPage = () => {
-  
+  const [searchEmail, setSearchEmail] = useState<string>("");
 
   return (
     <div className="background">
-      <div className="flex space-x-5 p-5">
-        <RecentChats />
+      <div className="">
         <ChatBox />
       </div>
     </div>

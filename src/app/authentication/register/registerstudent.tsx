@@ -48,6 +48,7 @@ export const RegisterStudent = () => {
       setError(null);
 
       alert("User registered successfully.");
+      window.location.href = "/";
     } catch (error) {
       setError((error as Error).message);
     }

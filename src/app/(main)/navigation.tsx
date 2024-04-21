@@ -164,7 +164,7 @@ export const NavigationBar = () => {
           </div>
           <div className="flex justify-center items-center hover:bg-white hover:text-black hover:rounded-md">
             <Mail />
-            <Link href={"/chat"}>
+            <Link href={"/chats"}>
               <Button variant={"ghost"}>Messages</Button>
             </Link>
           </div>
