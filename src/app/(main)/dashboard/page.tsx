@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
 import Image from "next/image";
-import { AtSign, Building2, GraduationCap } from "lucide-react";
+import { AtSign, Building2, CircleUser, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/config/firebase";
 
@@ -35,11 +35,6 @@ const DashboardPage = () => {
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
-
-  const handleLogout = () => {
-    logoutUser();
-    window.location.href = "/";
   };
 
   return (
@@ -79,21 +74,25 @@ const DashboardPage = () => {
                   </p>
                 </div>
               )}
-              <p className="pt-6 text-sm">
-                Add a short description about yourself here.
-              </p>
+              {userData.userAccountType && (
+                <div className="flex items-center justify-center lg:justify-start pt-2 space-x-3">
+                  <CircleUser className="text-green-700" />
+                  <p className="text-base font-semibold">
+                    {userData.userAccountType}
+                  </p>
+                </div>
+              )}
+              {userData.userBio && (
+                <p className="pt-6 text-sm">{userData.userBio}</p>
+              )}
               <div className="pt-6 flex items-center space-x-3">
                 <Button
-                  onClick={handleLogout}
-                  className="bg-green-700 hover:bg-green-900 text-white font-semibold py-2 px-4 rounded-lg"
-                >
-                  Sign Out
-                </Button>
-                <Button
-                  onClick={handleLogout}
+                  onClick={() =>
+                    (window.location.href = `user/${userData.userID}`)
+                  }
                   className="border-2 border-green-700 bg-transparent hover:bg-green-900/50 hover:text-white text-green-700 font-semibold py-2 px-4 rounded-lg"
                 >
-                  Edit
+                  Edit Account
                 </Button>
               </div>
             </div>

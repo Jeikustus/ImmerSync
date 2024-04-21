@@ -12,7 +12,7 @@ const InputWithLabel = React.forwardRef<HTMLInputElement, InputWithLabelProps>(
   ({ className, type, label, ...props }, ref) => {
     return (
       <div className="grid w-full max-w-5xl items-center gap-1.5">
-        <Label htmlFor={props.id} className="pl-1 text-white">
+        <Label htmlFor={props.id} className="pl-1">
           {label}
         </Label>
         <Input type={type} className={cn(className)} ref={ref} {...props} />
