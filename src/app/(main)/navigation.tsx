@@ -57,10 +57,6 @@ export const NavigationBar = () => {
     }
   }, [user]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   const handleLogout = async () => {
     logoutUser();
     window.location.href = "/";

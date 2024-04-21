@@ -15,7 +15,12 @@ const InputWithLabel = React.forwardRef<HTMLInputElement, InputWithLabelProps>(
         <Label htmlFor={props.id} className="pl-1">
           {label}
         </Label>
-        <Input type={type} className={cn(className)} ref={ref} {...props} />
+        <Input
+          type={type}
+          className={`text-black${cn(className)}`}
+          ref={ref}
+          {...props}
+        />
       </div>
     );
   }

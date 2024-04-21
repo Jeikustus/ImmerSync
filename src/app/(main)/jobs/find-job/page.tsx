@@ -19,6 +19,7 @@ type Job = {
   jobTitle: string;
   jobDescription: string;
   jobCategory: string;
+  jobID: string;
   createdAt: { seconds: number; nanoseconds: number };
 };
 
@@ -84,7 +85,9 @@ const FindJobs = () => {
                     <Card>
                       <CardHeader>
                         <CardTitle>{job.jobTitle}</CardTitle>
-                        <CardDescription>{job.jobDescription}</CardDescription>
+                        <CardDescription className="line-clamp-2">
+                          {job.jobDescription}
+                        </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <p className="text-gray-400 mt-2">
@@ -102,8 +105,21 @@ const FindJobs = () => {
                         </div>
                         <div className="flex flex-row-reverse space-x-2 space-x-reverse">
                           {" "}
-                          <Button>Quick Apply</Button>
-                          <Button variant="outline">View Details</Button>
+                          <Button
+                            onClick={() =>
+                              (window.location.href = `find-job/details/${job.jobID}/apply`)
+                            }
+                          >
+                            Quick Apply
+                          </Button>
+                          <Button
+                            onClick={() =>
+                              (window.location.href = `find-job/details/${job.jobID}`)
+                            }
+                            className="border-2 border-green-700 bg-transparent hover:bg-green-900/50 hover:text-white text-green-700 font-semibold py-2 px-4 rounded-lg"
+                          >
+                            View Details
+                          </Button>
                         </div>
                       </CardFooter>
                     </Card>

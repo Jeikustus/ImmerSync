@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { InputAreaWithLabel } from "@/components/ui/inputAreaWitlabel";
 import { InputWithLabel } from "@/components/ui/inputwithlabel";
 import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
-import { addDoc, collection, doc, getDoc, Timestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  Timestamp,
+} from "firebase/firestore";
 import { useState, useEffect } from "react";
 
 const PostJobs = () => {
@@ -47,6 +54,7 @@ const PostJobs = () => {
       }
 
       const jobData = {
+        jobID: "",
         jobCategory: jobCategory,
         jobTitle: jobTitle,
         jobDescription: jobDescription,
@@ -57,7 +65,16 @@ const PostJobs = () => {
       };
 
       const jobsCollection = collection(conDatabase, "jobs");
-      await addDoc(jobsCollection, jobData);
+      const docRef = await addDoc(jobsCollection, jobData);
+
+      const jobID = docRef.id;
+
+      const updatedJobData = {
+        ...jobData,
+        jobID: jobID,
+      };
+
+      await setDoc(doc(conDatabase, "jobs", jobID), updatedJobData);
 
       setJobCategory("");
       setJobTitle("");
