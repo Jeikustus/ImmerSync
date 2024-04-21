@@ -102,7 +102,7 @@ export const NavigationBar = () => {
                 {userData?.userAccountType === "Teacher" && (
                   <>
                     <Search />
-                    <Link href={"/find-job"}>
+                    <Link href={"/jobs/find-job"}>
                       <Button variant={"ghost"}>Find Job</Button>
                     </Link>
                   </>
@@ -120,7 +120,7 @@ export const NavigationBar = () => {
                         <DropdownMenuItem>
                           <div className="flex justify-center items-center">
                             <BadgePlus />
-                            <Link href={"/post-job"}>
+                            <Link href={"/jobs/post-job"}>
                               <Button variant={"ghost"}>Post Job</Button>
                             </Link>
                           </div>
@@ -128,7 +128,7 @@ export const NavigationBar = () => {
                         <DropdownMenuItem>
                           <div className="flex justify-center items-center">
                             <Search />
-                            <Link href={"/job-view-feedback"}>
+                            <Link href={"/jobs/view-feedback"}>
                               <Button variant={"ghost"}>View Feedback</Button>
                             </Link>
                           </div>
