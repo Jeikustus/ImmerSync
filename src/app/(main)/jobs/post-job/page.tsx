@@ -87,11 +87,11 @@ const PostJobs = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 text-white">
+    <div className="container mx-auto p-4">
       <div>
-        <h1 className="text-3xl font-bold mb-4">POST JOB</h1>
+        <h1 className="text-3xl font-bold mb-4 text-white">POST JOB</h1>
       </div>
-      <div>
+      <div className="bg-[#e9ffeb] flex flex-col justify-center items-center p-5 rounded-xl ">
         <InputWithLabel
           label="Job Category"
           className="text-black"
@@ -116,7 +116,7 @@ const PostJobs = () => {
           onChange={(e) => setJobDescription(e.target.value)}
           required
         />
-        <Button onClick={handlePostJob} className="mt-4">
+        <Button onClick={handlePostJob} className="mt-4 w-full">
           Post Job
         </Button>
       </div>

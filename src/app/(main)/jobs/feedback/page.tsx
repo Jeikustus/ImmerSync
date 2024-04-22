@@ -50,8 +50,7 @@ const FeedBackPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState<any>(null);
   const [jobDetails, setJobDetails] = useState<JobDetails[]>([]);
-  const [sendFeedback, setSendFeedback] = useState<string>("");
-  const [feedback, setFeedback] = useState<string>("");
+  const [feedback, setFeedback] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const unsubscribe = conAuth.onAuthStateChanged((user) => {
@@ -153,21 +152,32 @@ const FeedBackPage = () => {
     return date.toLocaleString(undefined, options);
   }
 
+  const handleFeedbackChange = (jobID: string, value: string) => {
+    setFeedback((prevFeedback) => ({
+      ...prevFeedback,
+      [jobID]: value,
+    }));
+  };
+
   const handleFeedbackSubmit = async (jobID: string) => {
     try {
       setLoading(true);
-      if (feedback.trim() !== "") {
+      const feedbackText = feedback[jobID];
+      if (feedbackText && feedbackText.trim() !== "") {
         await addDoc(collection(conDatabase, "students-feedback"), {
           jobID,
-          feedback,
+          feedback: feedbackText,
           studentEmail: userData?.userEmail,
           studentName: userData?.userFullName,
           timestamp: serverTimestamp(),
           createdAt: serverTimestamp(),
           createdByPictureURL: userData?.pictureURL,
         });
-        alert("Feedback Send Successfully!");
-        setFeedback("");
+        alert("Feedback Sent Successfully!");
+        setFeedback((prevFeedback) => ({
+          ...prevFeedback,
+          [jobID]: "",
+        }));
       } else {
         console.error("Feedback is empty");
       }
@@ -179,123 +189,137 @@ const FeedBackPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center pt-5">
+    <div className="flex flex-col pt-5">
       {loading ? (
         <div>Loading...</div>
       ) : jobDetails.length > 0 ? (
         jobDetails.map((jobDetail) => (
-          <Card key={jobDetail.jobID} className="p-5 max-w-7xl mb-4">
-            <CardHeader>
-              <CardTitle className="grid grid-cols-2">
-                <p className="font-bold">&quot;{jobDetail.jobTitle}&quot;</p>
-                <div className="flex justify-end space-x-2 text-sm text-blue-400">
-                  <p>
-                    Category: <em>{jobDetail.jobCategory}</em>
-                  </p>
-                </div>
-              </CardTitle>
-              <hr className="mx-auto lg:mx-0 w-[10%] pt-3 border-b-2 border-green-500 opacity-25" />
-              <CardDescription>{jobDetail.jobDescription}</CardDescription>
-              <hr className="mx-auto lg:mx-0 w-[10%] pt-3 border-b-2 border-green-500 opacity-25" />
-            </CardHeader>
-            <CardContent>
-              <div className="bg-slate-100 rounded-lg">
-                {appliedJobs.length === 0 ? (
-                  <p>No jobs found for the user</p>
-                ) : (
-                  <ul>
-                    {appliedJobs.map((job) => (
-                      <Card
-                        key={job.id}
-                        className="mb-4 flex flex-col justify-center"
-                      >
-                        <CardHeader>
-                          <CardTitle>
-                            <p className="font-bold">{job.appliedBy}</p>
-                            <p className="font-medium text-xs text-gray-400">
-                              Applied By
-                            </p>
-                          </CardTitle>
-                          <CardDescription className="text-green-500 text-xs">
-                            You have applied
-                          </CardDescription>
-                          <hr className="mx-auto w-full pt-3 border-b-2 border-green-500 opacity-25" />
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-2">
-                          <div>
-                            <div className="flex space-x-3 pb-2">
-                              <p className="font-medium text-gray-500">
-                                Applied At:
-                              </p>
-                              <p>{formatDate(job.appliedAt)}</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-500 ">
-                                Applied Student:
-                              </p>
-                              <div className="rounded-md ">
-                                {job.studentsApplied.map((student, index) => (
-                                  <p
-                                    key={index}
-                                    className="text-lg font-semibold"
+          <div key={jobDetail.jobID} className="mb-4 p-5 w-full">
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  <p className="font-bold">{jobDetail.jobTitle}</p>
+                  <div className="flex justify-end text-sm text-blue-400">
+                    <p>
+                      Category: <em>{jobDetail.jobCategory}</em>
+                    </p>
+                  </div>
+                </CardTitle>
+                <hr className="mx-auto w-[10%] pt-3 border-b-2 border-green-500 opacity-25" />
+                <CardDescription>{jobDetail.jobDescription}</CardDescription>
+                <hr className="mx-auto w-[10%] pt-3 border-b-2 border-green-500 opacity-25" />
+              </CardHeader>
+              <CardContent>
+                <div className="bg-slate-100 rounded-lg">
+                  {appliedJobs.length === 0 ? (
+                    <p>No jobs found for the user</p>
+                  ) : (
+                    <ul>
+                      {appliedJobs
+                        .filter((job) => job.jobID === jobDetail.jobID)
+                        .map((job) => (
+                          <Card key={job.id} className="mb-4">
+                            <CardHeader>
+                              <CardTitle>
+                                <p className="font-bold">{job.appliedBy}</p>
+                                <p className="font-medium text-xs text-gray-400">
+                                  Applied By
+                                </p>
+                              </CardTitle>
+                              <CardDescription className="text-green-500 text-xs">
+                                You have applied
+                              </CardDescription>
+                              <hr className="mx-auto w-full pt-3 border-b-2 border-green-500 opacity-25" />
+                            </CardHeader>
+                            <CardContent>
+                              <div className="grid grid-cols-2">
+                                <div>
+                                  <div className="flex space-x-3 pb-2">
+                                    <p className="font-medium text-gray-500">
+                                      Applied At:
+                                    </p>
+                                    <p>{formatDate(job.appliedAt)}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-gray-500">
+                                      Applied Student:
+                                    </p>
+                                    <div className="rounded-md">
+                                      {job.studentsApplied.map(
+                                        (student, index) => (
+                                          <p
+                                            key={index}
+                                            className="text-lg font-semibold"
+                                          >
+                                            {student}
+                                          </p>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="w-full mb-4">
+                                    <InputAreaWithLabel
+                                      label="Enter Feedback"
+                                      className="w-full"
+                                      value={feedback[jobDetail.jobID] || ""}
+                                      onChange={(e) =>
+                                        handleFeedbackChange(
+                                          jobDetail.jobID,
+                                          e.target.value
+                                        )
+                                      }
+                                      placeholder="What's in your mind?"
+                                      required
+                                    />
+                                  </div>
+                                  <Button
+                                    className="w-full"
+                                    onClick={() =>
+                                      handleFeedbackSubmit(jobDetail.jobID)
+                                    }
                                   >
-                                    {student}
-                                  </p>
-                                ))}
+                                    Send Feedback
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="w-full mb-4">
-                              <InputAreaWithLabel
-                                label="Enter Feedback"
-                                className="w-full"
-                                value={feedback}
-                                onChange={(e) => setFeedback(e.target.value)}
-                                placeholder="What's in your mind?"
-                                required
-                              />
-                            </div>
-                            <Button
-                              className="w-full"
-                              onClick={() => handleFeedbackSubmit(job.jobID)}
-                            >
-                              Send Feedback
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter className="grid grid-cols-2">
-              <div className="grid grid-rows-2 text-gray-400">
-                <div className="flex items-center space-x-2">
-                  <CircleUser />
-                  <p className="font-bold text-lg">{jobDetail.jobAuthor}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                    </ul>
+                  )}
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Mail style={{ fontSize: "16px" }} />
-                  <p className="text-sm">
-                    <em>{jobDetail.createdByEmail}</em>
-                  </p>
+              </CardContent>
+              <CardFooter>
+                <div className="grid grid-cols-2">
+                  <div className="grid grid-rows-2 text-gray-400">
+                    <div className="flex items-center space-x-2">
+                      <CircleUser />
+                      <p className="font-bold text-lg">{jobDetail.jobAuthor}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Mail style={{ fontSize: "16px" }} />
+                      <p className="text-sm">
+                        <em>{jobDetail.createdByEmail}</em>
+                      </p>
+                    </div>
+                    <div className="text-gray-400 flex space-x-2">
+                      <ClipboardCheck />
+                      <p>
+                        {new Date(
+                          jobDetail.createdAt.seconds * 1000
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <h2>Job ID: {jobDetail.jobID}</h2>
+                  </div>
                 </div>
-                <div className="text-gray-400 flex space-x-2">
-                  <ClipboardCheck />
-                  <p>
-                    {new Date(
-                      jobDetail.createdAt.seconds * 1000
-                    ).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <h2>Job ID: {jobDetail.jobID}</h2>
-              </div>
-            </CardFooter>
-          </Card>
+              </CardFooter>
+            </Card>
+          </div>
         ))
       ) : (
         <div>Job details not found</div>
