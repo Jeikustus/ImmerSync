@@ -79,6 +79,18 @@ export default function ApplyPage() {
       });
       console.log("Application submitted with ID: ", docRef.id);
       setSuccess(true);
+
+      const notificationRef = await addDoc(
+        collection(conDatabase, "notification", "job-applied-notification"),
+        {
+          jobApplicationID: docRef.id,
+          jobID: jobID,
+          appliedAt: new Date().toISOString(),
+          appliedBy: userData.userFullName,
+          appliedByEmail: userData.userEmail,
+        }
+      );
+      console.log("Notification added with ID: ", notificationRef.id);
     } catch (error) {
       console.error("Error adding document: ", error);
     } finally {

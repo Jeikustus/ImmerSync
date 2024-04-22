@@ -101,7 +101,10 @@ const LoginPage = () => {
           />
           <div className="flex space-x-2 text-white pb-5">
             <p>Forgot password?</p>
-            <Link href={"/reset"} className="font-medium hover:text-blue-500">
+            <Link
+              href={"/authentication/account/forgot-password"}
+              className="font-medium hover:text-blue-500"
+            >
               <em>Reset Password</em>
             </Link>
           </div>
@@ -109,10 +112,7 @@ const LoginPage = () => {
           <Button type="submit">Submit</Button>
           <p className="text-white">
             Don&apos;t have an Account yet?{" "}
-            <Link
-              href={"/register"}
-              className="font-medium hover:text-blue-500"
-            >
+            <Link href={"/"} className="font-medium hover:text-blue-500">
               <em>Click Register</em>
             </Link>
           </p>
