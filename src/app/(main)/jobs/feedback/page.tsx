@@ -188,10 +188,11 @@ const FeedBackPage = () => {
           conDatabase,
           "notification",
           "job-feedback-notification",
-          `feedbackBy-${userData.userEmail}`
+          `feedback`
         ),
         {
           feedback: feedbackText,
+          jobID: jobID,
           studentEmail: userData?.userEmail,
           studentName: userData?.userFullName,
           timestamp: serverTimestamp(),

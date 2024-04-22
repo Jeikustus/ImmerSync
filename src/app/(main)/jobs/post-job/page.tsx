@@ -58,6 +58,7 @@ const PostJobs = () => {
         jobCategory: jobCategory,
         jobTitle: jobTitle,
         jobDescription: jobDescription,
+        organizationName: userData?.userOrganizationName,
         jobAuthor: userData?.userFullName,
         createdBy: userData?.userID,
         createdByEmail: userData?.userEmail,
@@ -86,7 +87,7 @@ const PostJobs = () => {
           conDatabase,
           "notification",
           "job-posted-notification",
-          `postedBy-${userData.userEmail}`
+          `job-posted`
         ),
         {
           jobID: jobID,

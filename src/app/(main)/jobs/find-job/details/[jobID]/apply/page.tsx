@@ -85,7 +85,7 @@ export default function ApplyPage() {
           conDatabase,
           "notification",
           "job-applied-notification",
-          `appliedBy-${userData.userEmail}`
+          `applied`
         ),
         {
           jobApplicationID: docRef.id,
@@ -93,6 +93,8 @@ export default function ApplyPage() {
           appliedAt: new Date().toISOString(),
           appliedBy: userData.userFullName,
           appliedByEmail: userData.userEmail,
+          studentsApplied: studentEmails,
+          organizationName: jobDetails.organizationName,
           createdAt: Timestamp.now(),
         }
       );
