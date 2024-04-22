@@ -178,7 +178,7 @@ const NotificationPage = () => {
                 </div>
                 <div className="ms-3 grid grid-cols-2 space-x-3 min-w-[25%]">
                   <div>
-                    <p className="font-bold text-xl text-blue-700">
+                    <p className="font-bold text-lg text-blue-700">
                       {notification.jobTitle}
                     </p>
                     <p className="font-bold text-sm">
@@ -232,7 +232,7 @@ const NotificationPage = () => {
                   </div>
                   <div className="ms-3 grid grid-cols-2 space-x-3 min-w-[25%]">
                     <div>
-                      <p className="font-bold text-xl text-green-700">
+                      <p className="font-bold text-lg text-green-700">
                         {notification.jobTitle}
                       </p>
                       <p className="font-bold text-sm">
@@ -291,7 +291,7 @@ const NotificationPage = () => {
 
                     <div className="ms-3 grid grid-cols-2 space-x-3 min-w-[25%]">
                       <div>
-                        <p className="font-bold text-xl text-red-700">
+                        <p className="font-bold text-lg text-red-700">
                           {notification.jobTitle}
                         </p>
                         <p className="font-bold text-sm">
