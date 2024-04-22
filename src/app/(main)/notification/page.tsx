@@ -13,7 +13,20 @@ import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
 
 type Notification = {
   id: string;
-  // Add the properties according to your notification structure
+  jobAuthor: string;
+  jobTitle: string;
+  jobDescription: string;
+  jobCategory: string;
+  jobLocation: string;
+  jobDate: string;
+  jobTime: string;
+  jobID: string;
+  createdAt: { seconds: number; nanoseconds: number };
+  jobAuthorEmail: string;
+  jobAuthorName: string;
+  jobAuthorID: string;
+  jobAuthorPhotoURL: string;
+  jobAuthorBio: string;
 };
 
 const NotificationPage = () => {
@@ -65,7 +78,11 @@ const NotificationPage = () => {
   const fetchJobAppliedNotifications = async () => {
     try {
       const q = query(
-        collection(conDatabase, "notification", "job-applied-notification"),
+        collection(
+          conDatabase,
+          "notification",
+          "job-applied-notification/applied"
+        ),
         where("student", "==", userData.userEmail)
       );
       const querySnapshot = await getDocs(q);
@@ -82,7 +99,11 @@ const NotificationPage = () => {
   const fetchJobFeedbackNotifications = async () => {
     try {
       const q = query(
-        collection(conDatabase, "notification", "job-feedback-notification"),
+        collection(
+          conDatabase,
+          "notification",
+          "job-feedback-notification/feedback"
+        ),
         where("organizerAccount", "==", userData.userEmail)
       );
       const querySnapshot = await getDocs(q);
@@ -99,8 +120,11 @@ const NotificationPage = () => {
   const fetchJobPostedNotifications = async () => {
     try {
       const q = query(
-        collection(conDatabase, "notification", "job-posted-notification"),
-        where("teacherAccount", "==", userData.userEmail)
+        collection(
+          conDatabase,
+          "notification",
+          "job-posted-notification/job-posted"
+        )
       );
       const querySnapshot = await getDocs(q);
       const notifications = querySnapshot.docs.map((doc) => ({
@@ -133,13 +157,33 @@ const NotificationPage = () => {
         ))}
       </ul>
       <h2>Job Posted Notifications</h2>
-      <ul>
-        {jobPostedNotifications.map((notification) => (
-          <li key={notification.id}>
-            {/* Render notification details here */}
-          </li>
-        ))}
-      </ul>
+      {userData.accountType === "Teacher" && (
+        <ul>
+          {jobPostedNotifications.map((notification) => (
+            <li key={notification.id}>
+              <h3>Job Posted Notification</h3>
+              <p>
+                <strong>Job Author:</strong> {notification.jobAuthor}
+              </p>
+              <p>
+                <strong>Job Author Email:</strong> {notification.jobAuthorEmail}
+              </p>
+              <p>
+                <strong>Job ID:</strong> {notification.jobID}
+              </p>
+              <p>
+                <strong>Job Title:</strong> {notification.jobTitle}
+              </p>
+              <p>
+                <strong>Created At:</strong>{" "}
+                {new Date(
+                  notification.createdAt.seconds * 1000
+                ).toLocaleString()}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
