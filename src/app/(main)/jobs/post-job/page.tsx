@@ -81,6 +81,22 @@ const PostJobs = () => {
       setJobDescription("");
 
       alert("Job posted successfully!");
+      const notificationRef = await addDoc(
+        collection(
+          conDatabase,
+          "notification",
+          "job-posted-notification",
+          `postedBy-${userData.userEmail}`
+        ),
+        {
+          jobID: jobID,
+          jobTitle: jobTitle,
+          jobAuthor: userData.userFullName,
+          jobAuthorEmail: userData.userEmail,
+          createdAt: Timestamp.now(),
+        }
+      );
+      console.log("Notification added with ID: ", notificationRef.id);
     } catch (error) {
       console.error("Error posting job:", error);
     }

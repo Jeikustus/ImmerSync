@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { collection, addDoc, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc, Timestamp } from "firebase/firestore";
 import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
@@ -81,15 +81,22 @@ export default function ApplyPage() {
       setSuccess(true);
 
       const notificationRef = await addDoc(
-        collection(conDatabase, "notification", "job-applied-notification"),
+        collection(
+          conDatabase,
+          "notification",
+          "job-applied-notification",
+          `appliedBy-${userData.userEmail}`
+        ),
         {
           jobApplicationID: docRef.id,
           jobID: jobID,
           appliedAt: new Date().toISOString(),
           appliedBy: userData.userFullName,
           appliedByEmail: userData.userEmail,
+          createdAt: Timestamp.now(),
         }
       );
+
       console.log("Notification added with ID: ", notificationRef.id);
     } catch (error) {
       console.error("Error adding document: ", error);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  Timestamp,
   addDoc,
   collection,
   doc,
@@ -181,6 +182,25 @@ const FeedBackPage = () => {
       } else {
         console.error("Feedback is empty");
       }
+
+      const notificationRef = await addDoc(
+        collection(
+          conDatabase,
+          "notification",
+          "job-feedback-notification",
+          `feedbackBy-${userData.userEmail}`
+        ),
+        {
+          feedback: feedbackText,
+          studentEmail: userData?.userEmail,
+          studentName: userData?.userFullName,
+          timestamp: serverTimestamp(),
+          createdByPictureURL: userData?.pictureURL,
+        }
+      );
+
+      console.log("Notification added with ID: ", notificationRef.id);
+
       setLoading(false);
     } catch (error) {
       console.error("Error submitting feedback:", error);
