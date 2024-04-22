@@ -94,7 +94,7 @@ export const NavigationBar = () => {
                 {userData?.userAccountType === "Student" && (
                   <>
                     <MessageSquareHeart />
-                    <Link href={"/feedback"}>
+                    <Link href={"/jobs/feedback"}>
                       <Button variant={"ghost"}>Feedback</Button>
                     </Link>
                   </>

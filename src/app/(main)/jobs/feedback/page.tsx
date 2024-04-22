@@ -166,7 +166,7 @@ const FeedBackPage = () => {
           createdAt: serverTimestamp(),
           createdByPictureURL: userData?.pictureURL,
         });
-        alert("Success!");
+        alert("Feedback Send Successfully!");
         setFeedback("");
       } else {
         console.error("Feedback is empty");
