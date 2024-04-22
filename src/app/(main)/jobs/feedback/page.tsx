@@ -164,12 +164,20 @@ const FeedBackPage = () => {
     try {
       setLoading(true);
       const feedbackText = feedback[jobID];
+
+      const currentJobDetails = jobDetails.find((job) => job.jobID === jobID);
+      if (!currentJobDetails) {
+        console.error("No job details found for job ID:", jobID);
+        return;
+      }
+
       if (feedbackText && feedbackText.trim() !== "") {
         await addDoc(collection(conDatabase, "students-feedback"), {
           jobID,
           feedback: feedbackText,
           studentEmail: userData?.userEmail,
           studentName: userData?.userFullName,
+          jobAuthor: currentJobDetails.createdByEmail,
           timestamp: serverTimestamp(),
           createdAt: serverTimestamp(),
           createdByPictureURL: userData?.pictureURL,
@@ -195,6 +203,8 @@ const FeedBackPage = () => {
           jobID: jobID,
           studentEmail: userData?.userEmail,
           studentName: userData?.userFullName,
+          jobAuthor: currentJobDetails.createdByEmail,
+          jobTitle: currentJobDetails.jobTitle,
           timestamp: serverTimestamp(),
           createdByPictureURL: userData?.pictureURL,
         }
