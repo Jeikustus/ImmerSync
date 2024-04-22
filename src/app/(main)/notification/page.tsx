@@ -157,7 +157,7 @@ const NotificationPage = () => {
         ))}
       </ul>
       <h2>Job Posted Notifications</h2>
-      {userData.accountType === "Teacher" && (
+      {userData && userData.userAccountType === "Teacher" && (
         <ul>
           {jobPostedNotifications.map((notification) => (
             <li key={notification.id}>
