@@ -204,7 +204,9 @@ export default function UserDetails({ params: { userID } }: Props) {
               <div className="flex space-x-4">
                 <Button
                   className="w-full"
-                  onClick={() => (window.location.href = `user/reset`)}
+                  onClick={() =>
+                    (window.location.href = `/authentication/account/forgot-password`)
+                  }
                 >
                   Reset Password
                 </Button>
