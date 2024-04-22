@@ -68,11 +68,10 @@ export default function ApplyPage() {
     event.preventDefault();
     setLoading(true);
     try {
-      const studentNames = students.map((student) => student.name);
-      const studentsString = studentNames.join(", ");
+      const studentEmails = students.map((student) => student.name);
       const docRef = await addDoc(collection(conDatabase, "job-applications"), {
         jobID: jobID,
-        studentsApplied: studentsString,
+        studentsApplied: studentEmails,
         applicationLetter: applicationLetter,
         appliedAt: new Date().toISOString(),
         appliedBy: userData.userFullName,
