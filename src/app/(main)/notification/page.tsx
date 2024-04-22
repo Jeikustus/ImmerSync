@@ -10,35 +10,32 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { conAuth, conDatabase } from "@/config/firebase/firebaseConfig";
+import { Bell, BriefcaseBusiness, CircleAlert, CircleX } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-type Notification = {
+type jobAppliedType = {
   id: string;
-  jobAuthor: string;
-  jobTitle: string;
-  jobDescription: string;
-  jobCategory: string;
-  jobLocation: string;
-  jobDate: string;
-  jobTime: string;
+  appliedBy: string;
+  appliedByEmail: string;
+  jobApplicationID: string;
   jobID: string;
-  createdAt: { seconds: number; nanoseconds: number };
+  organizationName: string;
+  studentsApplied: string[];
+};
+
+type jobPostedType = {
+  id: string;
+  jobTitle: string;
+  jobID: string;
   jobAuthorEmail: string;
-  jobAuthorName: string;
-  jobAuthorID: string;
-  jobAuthorPhotoURL: string;
-  jobAuthorBio: string;
+  jobAuthor: string;
+  createdAt: { seconds: number; nanoseconds: number };
 };
 
 const NotificationPage = () => {
   const [userData, setUserData] = useState<any>(null);
-  const [jobAppliedNotifications, setJobAppliedNotifications] = useState<
-    Notification[]
-  >([]);
-  const [jobFeedbackNotifications, setJobFeedbackNotifications] = useState<
-    Notification[]
-  >([]);
   const [jobPostedNotifications, setJobPostedNotifications] = useState<
-    Notification[]
+    jobPostedType[]
   >([]);
 
   useEffect(() => {
@@ -55,8 +52,6 @@ const NotificationPage = () => {
 
   useEffect(() => {
     if (userData) {
-      fetchJobAppliedNotifications();
-      fetchJobFeedbackNotifications();
       fetchJobPostedNotifications();
     }
   }, [userData]);
@@ -75,48 +70,6 @@ const NotificationPage = () => {
     }
   };
 
-  const fetchJobAppliedNotifications = async () => {
-    try {
-      const q = query(
-        collection(
-          conDatabase,
-          "notification",
-          "job-applied-notification/applied"
-        ),
-        where("student", "==", userData.userEmail)
-      );
-      const querySnapshot = await getDocs(q);
-      const notifications = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Notification[];
-      setJobAppliedNotifications(notifications);
-    } catch (error) {
-      console.error("Error fetching job applied notifications:", error);
-    }
-  };
-
-  const fetchJobFeedbackNotifications = async () => {
-    try {
-      const q = query(
-        collection(
-          conDatabase,
-          "notification",
-          "job-feedback-notification/feedback"
-        ),
-        where("organizerAccount", "==", userData.userEmail)
-      );
-      const querySnapshot = await getDocs(q);
-      const notifications = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Notification[];
-      setJobFeedbackNotifications(notifications);
-    } catch (error) {
-      console.error("Error fetching job feedback notifications:", error);
-    }
-  };
-
   const fetchJobPostedNotifications = async () => {
     try {
       const q = query(
@@ -127,11 +80,11 @@ const NotificationPage = () => {
         )
       );
       const querySnapshot = await getDocs(q);
-      const notifications = querySnapshot.docs.map((doc) => ({
+      const jobPostedType = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as Notification[];
-      setJobPostedNotifications(notifications);
+      })) as jobPostedType[];
+      setJobPostedNotifications(jobPostedType);
     } catch (error) {
       console.error("Error fetching job posted notifications:", error);
     }
@@ -140,46 +93,53 @@ const NotificationPage = () => {
   return (
     <div>
       <h1>NOTIFICATION PAGE</h1>
-      <h2>Job Applied Notifications</h2>
-      <ul>
-        {jobAppliedNotifications.map((notification) => (
-          <li key={notification.id}>
-            {/* Render notification details here */}
-          </li>
-        ))}
-      </ul>
-      <h2>Job Feedback Notifications</h2>
-      <ul>
-        {jobFeedbackNotifications.map((notification) => (
-          <li key={notification.id}>
-            {/* Render notification details here */}
-          </li>
-        ))}
-      </ul>
-      <h2>Job Posted Notifications</h2>
       {userData && userData.userAccountType === "Teacher" && (
         <ul>
           {jobPostedNotifications.map((notification) => (
             <li key={notification.id}>
-              <h3>Job Posted Notification</h3>
-              <p>
-                <strong>Job Author:</strong> {notification.jobAuthor}
-              </p>
-              <p>
-                <strong>Job Author Email:</strong> {notification.jobAuthorEmail}
-              </p>
-              <p>
-                <strong>Job ID:</strong> {notification.jobID}
-              </p>
-              <p>
-                <strong>Job Title:</strong> {notification.jobTitle}
-              </p>
-              <p>
-                <strong>Created At:</strong>{" "}
-                {new Date(
-                  notification.createdAt.seconds * 1000
-                ).toLocaleString()}
-              </p>
+              <div
+                id="toast-default"
+                className="flex items-center max-w-[30%] p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                role="alert"
+              >
+                <div className="inline-flex items-center justify-center flex-shrink-0 w-20 h-20 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-800 dark:text-blue-200">
+                  <BriefcaseBusiness />
+                </div>
+                <div className="ms-3 grid grid-cols-2 space-x-3">
+                  <div>
+                    <p className="font-bold text-3xl text-green-700">
+                      {notification.jobTitle}
+                    </p>
+                    <p className="font-bold text-sm">
+                      {notification.jobAuthor}
+                    </p>
+
+                    <p className="text-xs">
+                      {new Date(
+                        notification.createdAt.seconds * 1000
+                      ).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="flex justify-center items-center">
+                    <Button
+                      onClick={() =>
+                        (window.location.href = `jobs/find-job/details/${notification.jobID}`)
+                      }
+                      className="border-2 border-blue-700 bg-transparent hover:bg-blue-900/50 hover:text-white text-blue-700 font-semibold py-2 px-4 rounded-lg"
+                    >
+                      Open Job
+                    </Button>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  className="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                  data-dismiss-target="#toast-default"
+                  aria-label="Close"
+                >
+                  <CircleX />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
