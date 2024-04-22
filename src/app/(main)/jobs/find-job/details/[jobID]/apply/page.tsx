@@ -73,6 +73,7 @@ export default function ApplyPage() {
         jobID: jobID,
         studentsApplied: studentEmails,
         applicationLetter: applicationLetter,
+        jobTitle: jobDetails.jobTitle,
         appliedAt: new Date().toISOString(),
         appliedBy: userData.userFullName,
         appliedByEmail: userData.userEmail,
@@ -90,6 +91,7 @@ export default function ApplyPage() {
         {
           jobApplicationID: docRef.id,
           jobID: jobID,
+          jobTitle: jobDetails.jobTitle,
           appliedAt: new Date().toISOString(),
           appliedBy: userData.userFullName,
           appliedByEmail: userData.userEmail,
