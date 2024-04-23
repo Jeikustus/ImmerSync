@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordFirebase, Auth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase, } from "firebase/auth";
+import { createUserWithEmailAndPassword as createUserWithEmailAndPasswordFirebase, Auth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase, sendPasswordResetEmail, } from "firebase/auth";
 import {  conAuth, conDatabase } from "../firebaseConfig"; 
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "@firebase/storage";
@@ -65,9 +65,9 @@ export const signInWithEmailAndPassword = async (email: string, password: string
   };
   
 
-export const resetPassword = async (auth: Auth, userEmail: string) => {
+  export const resetPassword = async (auth: Auth, userEmail: string) => {
     try {
-        sendPasswordResetEmailFirebase(auth, userEmail);
+        await sendPasswordResetEmail(auth, userEmail); 
         console.log("Password reset email sent successfully");
         return userEmail;
     } catch (error) {
@@ -75,6 +75,7 @@ export const resetPassword = async (auth: Auth, userEmail: string) => {
         throw error;
     }
 }
+
 
 function sendPasswordResetEmailFirebase(_auth: Auth, _userEmail: string) {
     throw new Error("Function not implemented.");
